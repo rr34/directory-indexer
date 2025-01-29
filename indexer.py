@@ -27,14 +27,17 @@ def index_drive(directory):
 
     index_df = pd.DataFrame({'directory': dirs_list, 'filename': filenames_list, "fullpath": fullpath_list})
 
-    index_df.to_csv('!drive_index.csv')
-    with open('!index_log.txt') as text_file:
+    drive_index_path = os.path.join(directory, '!drive_index.csv')
+    index_log_path = os.path.join(directory, '!index_log.txt')
+
+    index_df.to_csv(drive_index_path)
+    with open(index_log_path, 'w') as text_file:
         text_file.write(index_log_str)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="A simple directory indexer that saves filenames and full paths of a directory as CSV for easy searching.")
-    parser.add_argument("directory", type=float, help="Directory to be indexed.")
+    parser = argparse.ArgumentParser(description="A simple directory indexer that saves filenames and full paths of a directory as CSV for easy searching. The only argument it takes is the path of the directory to be indexed. The resulting index file and log will be saved in the directory indexed.")
+    parser.add_argument("directory", type=str, help="Directory to be indexed.")
  
     args = parser.parse_args()
  
