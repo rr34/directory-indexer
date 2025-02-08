@@ -1,5 +1,6 @@
-import argparse, os, time
+import os, time
 import pandas as pd
+import datetime
 
 def index_drive(directory):
     dirs_list = list()
@@ -35,10 +36,15 @@ def index_drive(directory):
         text_file.write(index_log_str)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="A simple directory indexer that saves filenames and full paths of a directory as CSV for easy searching. The only argument it takes is the path of the directory to be indexed. The resulting index file and log will be saved in the directory indexed.")
-    parser.add_argument("directory", type=str, help="Directory to be indexed.")
- 
-    args = parser.parse_args()
- 
-index_drive(args.directory)
+def date_formatter(working_dir):
+    for file in os.listdir(working_dir):
+        file_type = os.path.splitext(file)[-1]
+        if file_type.lower() == '.csv':
+            bank_df = pd.read_csv(os.path.join(working_dir, file))
+            bank_df.columns = bank_df.columns.str.lower()
+            ISO8601_format = '%Y-%m-%d'
+            bank_df['date2'] = pd.to_datetime(bank_df['date']).dt.strftime(ISO8601_format)
+
+            new_filename = 'output - ' + file
+            new_filepath = os.path.join(working_dir, new_filename)
+            bank_df.to_csv(new_filepath)
