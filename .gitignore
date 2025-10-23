@@ -2,3 +2,4 @@ working/
 py3129_venv/
 
 scripts.py
+.env
