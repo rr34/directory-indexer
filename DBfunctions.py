@@ -2,7 +2,7 @@ import sys, os
 import mariadb
 import pandas as pd
 
-def sql_execute(text, user_input=None, result_type=None, many=False):
+def sql_execute(SQL, user_input=None, result_type=None, many=False):
     try:
         conn = mariadb.connect(
             user=os.getenv('MYSQL_USER'),
@@ -17,11 +17,11 @@ def sql_execute(text, user_input=None, result_type=None, many=False):
     cur = conn.cursor()
 
     if many and user_input:
-        cur.executemany(text, user_input)
+        cur.executemany(SQL, user_input)
     elif user_input and result_type:
-        cur.execute(text, user_input)
+        cur.execute(SQL, user_input)
     elif not user_input:
-        cur.execute(text)
+        cur.execute(SQL)
 
     if result_type == 'dataframe':
         result_fetched = cur.fetchall()
@@ -52,6 +52,7 @@ def sql_execute(text, user_input=None, result_type=None, many=False):
         return results
     elif result_type == 'updatedb':
         conn.commit()
+        last_id = cur.lastrowid
         cur.close()
         conn.close()
-        return
+        return last_id

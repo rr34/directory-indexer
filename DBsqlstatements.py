@@ -1,6 +1,28 @@
 from typing import List, Any
 import DBfunctions
 
+
+def insert_keystone_filedata(qms_tuple: tuple) -> int:
+
+    result_fid = DBfunctions.sql_execute("""
+INSERT INTO files_list (Fullpath, Filename, FileType, FileText, FileSource)
+VALUES (?, ?, ?, ?, ?) ;
+""", qms_tuple, result_type='updatedb')
+
+    return result_fid
+
+
+def insert_keystone_ptdata(north_field, east_field, elev_field, qms_tuples: List[tuple]) -> None:
+
+    results = DBfunctions.sql_execute(f"""
+INSERT INTO points_all (FileID, SurveyIndex, {north_field}, {east_field}, {elev_field}, UTMZone, PointDescription)
+VALUES (%s, %s, %s, %s, %s, %s, %s) ;
+""", qms_tuples, result_type='updatedb', many=True)
+
+    return results
+
+
+# sometimes useful to send the data to DB and clean data using SQL after data is sent
 def insert_data(data: List[tuple]) -> None:
     # qms_tuple = [tuple(datum) for datum in data]
     qms_tuple = data
@@ -10,8 +32,6 @@ VALUES (%s, %s, %s, %s, %s, %s) ;
 """, qms_tuple, result_type='updatedb', many=True)
 
     return results
-
-
 
 
 def get_photo(batchID, basename):

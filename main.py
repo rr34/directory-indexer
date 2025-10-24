@@ -6,7 +6,8 @@ def index_drive(directory):
     dirs_list = list()
     filenames_list = list()
     fullpath_list = list()
-    index_log_str = 'Indexed by directory-indexer by rr34. See github.com/rr34/directory-indexer\n'
+    filetypes_list = list()
+    index_log_str = 'Indexed by little-tools by rr34. See github.com/rr34/little-tools\n'
     directories_count = 0
     files_count = 0
     start_time = time.time()
@@ -17,6 +18,8 @@ def index_drive(directory):
             dirs_list.append(root)
             filenames_list.append(filename)
             fullpath_list.append(os.path.join(root, filename))
+            filetype = os.path.splitext(filename)[-1]
+            filetypes_list.append(filetype)
         print(f'Directories count: {directories_count}. Directory: {root}')
     elapsed_time = int(time.time() - start_time)
     elapsed_time_str = f'{int(elapsed_time/60)} minutes, {elapsed_time%60} seconds'
@@ -26,7 +29,7 @@ def index_drive(directory):
     index_log_str += f'Directory indexed: {directory}\nCompleted at date/time: {index_completed_time}\nIndexing elapsed time: {elapsed_time_str}\nDirectories count: {directories_count}\nFiles count: {files_count}\n\n'
     print(index_log_str)
 
-    index_df = pd.DataFrame({'directory': dirs_list, 'filename': filenames_list, "fullpath": fullpath_list})
+    index_df = pd.DataFrame({'directory': dirs_list, 'filename': filenames_list, 'fullpath': fullpath_list, 'filetype': filetypes_list})
 
     drive_index_path = os.path.join(directory, '!drive_index.csv')
     index_log_path = os.path.join(directory, '!index_log.txt')
