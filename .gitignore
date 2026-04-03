@@ -1,5 +1,6 @@
 working/
 py3129_venv/
+__pycache__/
 
 scripts.py
 .env
